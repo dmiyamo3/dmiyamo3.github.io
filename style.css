@@ -1,30 +1,36 @@
 /* --- Utility & Reset --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body, h1, h2, h3, h4, p, ul, li, img, a {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 /* カラーパレット */
 :root {
-    --c-primary: hsl(220, 90%, 55%);
-    --c-secondary: hsl(220, 10%, 90%);
-    --c-dark: hsl(220, 10%, 20%);
-    --c-light: hsl(220, 100%, 98%);
-    --c-accent: hsl(340, 80%, 60%);
-    --c-vr: hsl(200, 80%, 60%);
-    --c-math: hsl(120, 60%, 60%);
-    --c-tool: hsl(40, 90%, 60%);
+    --c-primary: hsl(220, 85%, 58%);
+    --c-secondary: hsl(220, 15%, 96%);
+    --c-dark: hsl(220, 15%, 15%);
+    --c-light: hsl(220, 50%, 99%);
+    --c-accent: hsl(340, 75%, 65%);
+    --c-featured: hsl(280, 70%, 65%);
+    --c-vr: hsl(200, 75%, 60%);
+    --c-display: hsl(160, 65%, 55%);
+    --c-tool: hsl(40, 85%, 65%);
+    --c-text-light: hsl(220, 15%, 40%);
+    --c-border: hsl(220, 20%, 88%);
 }
 
 /* 基本スタイル */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background: var(--c-light);
     color: var(--c-dark);
-    line-height: 1.7;
+    line-height: 1.6;
     min-height: 100vh;
-    transition: background 0.3s, color 0.3s;
+    font-size: 16px;
 }
 
 header {
@@ -148,6 +154,47 @@ footer {
     color: var(--c-dark);
     margin-top: 3rem;
     font-size: 0.95rem;
+}
+
+/* --- 作品メタ情報バッジ --- */
+.work-meta {
+    display: inline-block;
+    margin-top: 0.4em;
+    padding: 0.18em 0.7em;
+    font-size: 0.93em;
+    font-weight: 500;
+    border-radius: 1em;
+    background: var(--c-primary);
+    color: var(--c-light);
+    letter-spacing: 0.01em;
+    vertical-align: middle;
+    opacity: 0.92;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: background 0.2s, color 0.2s;
+}
+.works-category:nth-of-type(1) .work-meta {
+    background: var(--c-vr);
+}
+.works-category:nth-of-type(2) .work-meta {
+    background: var(--c-math);
+}
+.works-category:nth-of-type(3) .work-meta {
+    background: var(--c-tool);
+}
+@media (prefers-color-scheme: dark) {
+    .work-meta {
+        color: var(--c-dark);
+        background: hsl(220, 10%, 85%);
+    }
+    .works-category:nth-of-type(1) .work-meta {
+        background: hsl(200, 80%, 80%);
+    }
+    .works-category:nth-of-type(2) .work-meta {
+        background: hsl(120, 60%, 80%);
+    }
+    .works-category:nth-of-type(3) .work-meta {
+        background: hsl(40, 90%, 80%);
+    }
 }
 
 /* --- ダークモード --- */
