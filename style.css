@@ -15,10 +15,18 @@ body, h1, h2, h3, h4, p, ul, li, img, a {
     --c-dark: hsl(220, 15%, 15%);
     --c-light: hsl(220, 50%, 99%);
     --c-accent: hsl(340, 75%, 65%);
-    --c-featured: hsl(280, 70%, 65%);
-    --c-vr: hsl(200, 75%, 60%);
-    --c-display: hsl(160, 65%, 55%);
-    --c-tool: hsl(40, 85%, 65%);
+    
+    /* カテゴリ専用カラー - 統一性を持った色相ベース */
+    --c-featured: hsl(280, 70%, 58%);
+    --c-vr: hsl(210, 75%, 55%);
+    --c-display: hsl(150, 65%, 50%);
+    --c-tool: hsl(35, 80%, 55%);
+    
+    /* セクションタイトル用 */
+    --c-about: hsl(190, 65%, 55%);
+    --c-works: var(--c-primary);
+    --c-contact: hsl(320, 65%, 55%);
+    
     --c-text-light: hsl(220, 15%, 40%);
     --c-border: hsl(220, 20%, 88%);
 }
@@ -68,10 +76,100 @@ main {
     padding: 0 1rem;
 }
 
-.profile-list {
-    margin: 1rem 0 2rem 1.2rem;
-    list-style: disc;
+/* メインセクション見出し */
+section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.75rem;
+    border-left: 6px solid var(--c-primary);
     color: var(--c-dark);
+}
+
+#about h2 {
+    border-color: var(--c-about);
+}
+
+#works h2 {
+    border-color: var(--c-works);
+}
+
+#contact h2 {
+    border-color: var(--c-contact);
+}
+
+/* スキルカテゴリー */
+.skill-categories {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.skill-group {
+    background: var(--c-secondary);
+    border-radius: 10px;
+    padding: 1.5rem;
+    border-top: 4px solid var(--c-about);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.skill-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--c-about);
+    font-weight: 600;
+}
+
+.skill-group ul {
+    list-style: none;
+    padding: 0;
+}
+
+.skill-group li {
+    margin-bottom: 0.6rem;
+    color: var(--c-dark);
+    line-height: 1.5;
+}
+
+.skill-group strong {
+    color: var(--c-about);
+}
+
+/* リンクセクション */
+.links-section {
+    background: var(--c-secondary);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-left: 5px solid var(--c-about);
+    text-align: center;
+}
+
+.links-section a {
+    color: var(--c-about);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.links-section a:hover {
+    text-decoration: underline;
+}
+
+/* 全作品リンクセクション */
+.more-works-section {
+    text-align: center;
+    margin: 2.5rem 0;
+    padding: 1.5rem;
+    background: var(--c-secondary);
+    border-radius: 10px;
+    border-top: 4px solid var(--c-primary);
+}
+
+.more-works-section a {
+    color: var(--c-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .works-category {
@@ -85,15 +183,20 @@ main {
     border-left: 5px solid var(--c-primary);
 }
 
+/* カテゴリごとの統一カラー */
 .works-category:nth-of-type(1) h3 {
-    border-color: var(--c-vr);
+    border-color: var(--c-featured);
 }
 
 .works-category:nth-of-type(2) h3 {
-    border-color: var(--c-math);
+    border-color: var(--c-vr);
 }
 
 .works-category:nth-of-type(3) h3 {
+    border-color: var(--c-display);
+}
+
+.works-category:nth-of-type(4) h3 {
     border-color: var(--c-tool);
 }
 
@@ -114,15 +217,20 @@ main {
     transition: box-shadow 0.2s;
 }
 
+/* カテゴリごとの統一カラー */
 .works-category:nth-of-type(1) .work-item {
-    border-top-color: var(--c-vr);
+    border-top-color: var(--c-featured);
 }
 
 .works-category:nth-of-type(2) .work-item {
-    border-top-color: var(--c-math);
+    border-top-color: var(--c-vr);
 }
 
 .works-category:nth-of-type(3) .work-item {
+    border-top-color: var(--c-display);
+}
+
+.works-category:nth-of-type(4) .work-item {
     border-top-color: var(--c-tool);
 }
 
@@ -137,68 +245,69 @@ main {
 .work-item h4 {
     margin: 0.5rem 0 0.2rem 0;
     font-size: 1.1rem;
-}
-
-.more-works {
-    text-align: right;
-    margin-bottom: 2rem;
-}
-
-.more-works a {
-    color: var(--c-primary);
-    text-decoration: underline;
+    color: var(--c-dark);
 }
 
 footer {
     text-align: center;
     color: var(--c-dark);
     margin-top: 3rem;
+    padding: 2rem 0;
     font-size: 0.95rem;
+    border-top: 1px solid var(--c-border);
 }
 
 /* --- 作品メタ情報バッジ --- */
 .work-meta {
     display: inline-block;
     margin-top: 0.4em;
-    padding: 0.18em 0.7em;
-    font-size: 0.93em;
-    font-weight: 500;
-    border-radius: 1em;
+    padding: 0.2em 0.8em;
+    font-size: 0.9em;
+    font-weight: 600;
+    border-radius: 1.2em;
     background: var(--c-primary);
     color: var(--c-light);
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     vertical-align: middle;
-    opacity: 0.92;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-    transition: background 0.2s, color 0.2s;
-}
-.works-category:nth-of-type(1) .work-meta {
-    background: var(--c-vr);
-}
-.works-category:nth-of-type(2) .work-meta {
-    background: var(--c-math);
-}
-.works-category:nth-of-type(3) .work-meta {
-    background: var(--c-tool);
-}
-@media (prefers-color-scheme: dark) {
-    .work-meta {
-        color: var(--c-dark);
-        background: hsl(220, 10%, 85%);
-    }
-    .works-category:nth-of-type(1) .work-meta {
-        background: hsl(200, 80%, 80%);
-    }
-    .works-category:nth-of-type(2) .work-meta {
-        background: hsl(120, 60%, 80%);
-    }
-    .works-category:nth-of-type(3) .work-meta {
-        background: hsl(40, 90%, 80%);
-    }
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
+/* 代表作品セクション */
+.works-category:nth-of-type(1) .work-meta {
+    background: var(--c-featured);
+    color: var(--c-light);
+}
+
+/* VR/AR Projects */
+.works-category:nth-of-type(2) .work-meta {
+    background: var(--c-vr);
+    color: var(--c-light);
+}
+
+/* 立体視・ディスプレイ技術 */
+.works-category:nth-of-type(3) .work-meta {
+    background: var(--c-display);
+    color: var(--c-light);
+}
+
+/* Tools & Utilities */
+.works-category:nth-of-type(4) .work-meta {
+    background: var(--c-tool);
+    color: var(--c-light);
+}
 /* --- ダークモード --- */
 @media (prefers-color-scheme: dark) {
+    :root {
+        /* ダークモード用に調整された明るいカラー */
+        --c-about-dark: hsl(190, 55%, 75%);
+        --c-featured-dark: hsl(280, 55%, 75%);
+        --c-vr-dark: hsl(210, 55%, 75%);
+        --c-display-dark: hsl(150, 50%, 75%);
+        --c-tool-dark: hsl(35, 60%, 75%);
+        --c-contact-dark: hsl(320, 55%, 75%);
+    }
+
     body {
         background: var(--c-dark);
         color: var(--c-light);
@@ -208,24 +317,103 @@ footer {
         background: var(--c-dark);
         color: var(--c-light);
     }
+    
+    section h2 {
+        color: var(--c-light);
+    }
+    
+    #about h2 {
+        border-color: var(--c-about-dark);
+    }
+    
+    #contact h2 {
+        border-color: var(--c-contact-dark);
+    }
+
+    .skill-group {
+        background: hsl(220, 10%, 25%);
+        border-top-color: var(--c-about-dark);
+    }
+    
+    .skill-group h3 {
+        color: var(--c-about-dark);
+    }
+    
+    .skill-group li {
+        color: var(--c-light);
+    }
+    
+    .skill-group strong {
+        color: var(--c-about-dark);
+    }
+    
+    .links-section {
+        background: hsl(220, 10%, 25%);
+        border-left-color: var(--c-about-dark);
+    }
+    
+    .links-section a {
+        color: var(--c-about-dark);
+    }
 
     .work-item {
         background: hsl(220, 10%, 25%);
         color: var(--c-light);
     }
+    
+    .more-works-section {
+        background: hsl(220, 10%, 25%);
+    }
 
-    .more-works a {
+    .more-works-section a {
         color: var(--c-accent);
     }
 
     footer {
         color: var(--c-secondary);
     }
+    
+    .work-meta {
+        box-shadow: 0 2px 6px rgba(255,255,255,0.1);
+    }
+    
+    /* ダークモードでは明るい色に統一し、ダークテキストで視認性確保 */
+    .works-category:nth-of-type(1) .work-meta {
+        background: var(--c-featured-dark);
+        color: var(--c-dark);
+    }
+    
+    .works-category:nth-of-type(2) .work-meta {
+        background: var(--c-vr-dark);
+        color: var(--c-dark);
+    }
+    
+    .works-category:nth-of-type(3) .work-meta {
+        background: var(--c-display-dark);
+        color: var(--c-dark);
+    }
+    
+    .works-category:nth-of-type(4) .work-meta {
+        background: var(--c-tool-dark);
+        color: var(--c-dark);
+    }
 }
 
 /* --- レスポンシブ --- */
 @media (min-width: 768px) {
+    .skill-categories {
+        grid-template-columns: 1fr 1fr;
+    }
+    
     .works-list {
         grid-template-columns: 1fr 1fr;
+    }
+    
+    section h2 {
+        font-size: 2rem;
+    }
+    
+    .works-category h3 {
+        font-size: 1.4rem;
     }
 }
