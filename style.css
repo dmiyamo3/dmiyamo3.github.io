@@ -1,0 +1,139 @@
+/* --- Utility & Reset --- */
+body, h1, h2, h3, p, ul, li, img, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* カラーパレット */
+:root {
+    --c-primary: hsl(220, 90%, 55%);
+    --c-secondary: hsl(220, 10%, 90%);
+    --c-dark: hsl(220, 10%, 20%);
+    --c-light: hsl(220, 100%, 98%);
+    --c-accent: hsl(340, 80%, 60%);
+}
+
+/* 基本スタイル */
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--c-light);
+    color: var(--c-dark);
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+header {
+    background: var(--c-primary);
+    color: var(--c-light);
+    padding: 1.5rem 0 1rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+nav a {
+    color: var(--c-light);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+nav a:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.profile-list {
+    margin: 1rem 0 2rem 1.2rem;
+    list-style: disc;
+    color: var(--c-dark);
+}
+
+.works-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.work-item {
+    background: var(--c-secondary);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    text-align: center;
+}
+
+.work-item img {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+    background: #eee;
+}
+
+.work-item h3 {
+    margin: 0.5rem 0 0.2rem 0;
+    font-size: 1.2rem;
+}
+
+.more-works {
+    text-align: right;
+    margin-bottom: 2rem;
+}
+
+.more-works a {
+    color: var(--c-primary);
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    color: var(--c-dark);
+    margin-top: 3rem;
+    font-size: 0.95rem;
+}
+
+/* --- ダークモード --- */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: var(--c-dark);
+        color: var(--c-light);
+    }
+    header {
+        background: var(--c-dark);
+        color: var(--c-light);
+    }
+    .work-item {
+        background: hsl(220, 10%, 25%);
+        color: var(--c-light);
+    }
+    .more-works a {
+        color: var(--c-accent);
+    }
+    footer {
+        color: var(--c-secondary);
+    }
+}
+
+/* --- レスポンシブ --- */
+@media (min-width: 768px) {
+    .works-list {
+        grid-template-columns: 1fr 1fr;
+    }
+}
