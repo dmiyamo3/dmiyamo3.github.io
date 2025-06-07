@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reflex Tap</title>
+<style>
+html,body{height:100%;margin:0;font-family:sans-serif;text-align:center}
+#circle{width:60vmin;height:60vmin;margin:20vh auto;border-radius:50%;background:red;display:flex;align-items:center;justify-content:center;color:#fff;font-size:4vmin;user-select:none}
+</style>
+</head>
+<body>
+<div id="circle">Tap when green</div>
+<script>
+// Reflex Tap - simple reaction game
+let state=0,start,results=[];
+const c=document.getElementById('circle');
+function next(){
+  c.style.background='red';c.textContent='';state=1;
+  setTimeout(()=>{c.style.background='green';start=Date.now();state=2;},1000+Math.random()*2000);
+}
+// pointer events work for both mouse and touch
+c.addEventListener('pointerdown',()=>{
+  if(state!==2)return;
+  const t=Date.now()-start;results.push(t);
+  if(results.length===3){
+    const avg=Math.round(results.reduce((a,b)=>a+b)/3);
+    c.textContent=`Avg: ${avg}ms`;c.style.background='#333';
+  }else next();
+});
+window.onload=next;
+</script>
+</body>
+</html>
