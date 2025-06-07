@@ -3,32 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reflex Tap</title>
+<title>Reflex Game</title>
 <style>
-html,body{height:100%;margin:0;font-family:sans-serif;text-align:center}
-#circle{width:60vmin;height:60vmin;margin:20vh auto;border-radius:50%;background:red;display:flex;align-items:center;justify-content:center;color:#fff;font-size:4vmin;user-select:none}
+html,body{height:100%;margin:0;font-family:sans-serif;text-align:center;background:#f0f0f0}
+.container{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%}
+#circle{width:60vmin;height:60vmin;margin:2rem auto;border-radius:50%;background:#bbb;display:flex;align-items:center;justify-content:center;color:#fff;font-size:4vmin;user-select:none}
+#info{margin-top:1rem;font-size:1.2rem}
+button{margin-top:1.5rem;padding:0.6rem 1.2rem;font-size:1rem;border:none;border-radius:4px;background:#1976d2;color:#fff}
+button:disabled{background:#888}
 </style>
 </head>
 <body>
-<div id="circle">Tap when green</div>
+<div class="container">
+  <h1>Reflex Game</h1>
+  <p>円が緑になったら素早くタップしてください。3回の平均反応時間を計測します。</p>
+  <div id="circle">Start</div>
+  <div id="info"></div>
+  <button id="startBtn">スタート</button>
+</div>
 <script>
-// Reflex Tap - simple reaction game
 let state=0,start,results=[];
-const c=document.getElementById('circle');
-function next(){
-  c.style.background='red';c.textContent='';state=1;
-  setTimeout(()=>{c.style.background='green';start=Date.now();state=2;},1000+Math.random()*2000);
+const circle=document.getElementById('circle');
+const info=document.getElementById('info');
+const startBtn=document.getElementById('startBtn');
+
+function reset(){
+  results=[];
+  info.textContent='';
 }
-// pointer events work for both mouse and touch
-c.addEventListener('pointerdown',()=>{
+
+function nextRound(){
+  state=1;
+  circle.style.background='red';
+  circle.textContent='Wait...';
+  setTimeout(()=>{
+    circle.style.background='green';
+    circle.textContent='Tap!';
+    start=Date.now();
+    state=2;
+  },1000+Math.random()*2000);
+}
+
+function endGame(){
+  const avg=Math.round(results.reduce((a,b)=>a+b)/results.length);
+  circle.style.background='#333';
+  circle.textContent=`Avg ${avg}ms`;
+  info.textContent='もう一度遊ぶにはスタートを押してください';
+  startBtn.disabled=false;
+  state=3;
+}
+
+function startGame(){
+  reset();
+  startBtn.disabled=true;
+  nextRound();
+}
+
+circle.addEventListener('pointerdown',()=>{
   if(state!==2)return;
-  const t=Date.now()-start;results.push(t);
-  if(results.length===3){
-    const avg=Math.round(results.reduce((a,b)=>a+b)/3);
-    c.textContent=`Avg: ${avg}ms`;c.style.background='#333';
-  }else next();
+  const t=Date.now()-start;
+  results.push(t);
+  circle.textContent=`${t} ms`;
+  if(results.length>=3){
+    endGame();
+  }else{
+    setTimeout(nextRound,500);
+  }
 });
-window.onload=next;
+
+startBtn.addEventListener('click',startGame);
 </script>
 </body>
 </html>
