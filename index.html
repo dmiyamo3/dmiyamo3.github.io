@@ -185,6 +185,15 @@
                 <p><a href="https://github.com/dmiyamo3/miyamo-notebook/blob/master/works.md" target="_blank" rel="noopener">🔗 全作品・展示履歴を見る</a></p>
             </div>
         </section>
+        <section id="reflex-game">
+            <h2>Reflex Game</h2>
+            <p class="game-desc">画面が緑になったらタップして反応速度を測りましょう。</p>
+            <div id="game-area">
+                <p id="game-info">スタートボタンを押してください</p>
+            </div>
+            <button id="start-btn" class="game-btn">スタート</button>
+            <p id="game-result" class="game-result"></p>
+        </section>
         <section id="contact">
             <h2>Contact</h2>
             <p>ご質問・ご相談は <a href="https://twitter.com/DMiyamo3" target="_blank" rel="noopener">Twitter</a> または <a href="https://github.com/dmiyamo3/dmiyamo3.github.io/issues" target="_blank" rel="noopener">GitHub Issues</a> からどうぞ。</p>
@@ -197,6 +206,49 @@
         const btn = document.getElementById('theme-toggle');
         btn.addEventListener('click', () => {
             document.body.classList.toggle('dark');
+        });
+
+        // Reflex Game Logic
+        const startBtn = document.getElementById('start-btn');
+        const gameArea = document.getElementById('game-area');
+        const gameInfo = document.getElementById('game-info');
+        const gameResult = document.getElementById('game-result');
+        let gameState = 'idle';
+        let startTime = 0;
+        let timerId;
+
+        function resetGame(msg) {
+            clearTimeout(timerId);
+            gameState = 'idle';
+            gameArea.classList.remove('ready');
+            startBtn.style.display = 'inline-block';
+            if (msg) gameInfo.textContent = msg;
+        }
+
+        function startGame() {
+            startBtn.style.display = 'none';
+            gameResult.textContent = '';
+            gameInfo.textContent = '赤色から緑色に変わったらタップ!';
+            gameState = 'waiting';
+            const delay = 2000 + Math.random() * 3000;
+            timerId = setTimeout(() => {
+                gameState = 'ready';
+                gameArea.classList.add('ready');
+                gameInfo.textContent = '今だ! タップ!';
+                startTime = performance.now();
+            }, delay);
+        }
+
+        startBtn.addEventListener('click', startGame);
+
+        gameArea.addEventListener('click', () => {
+            if (gameState === 'ready') {
+                const reaction = ((performance.now() - startTime) / 1000).toFixed(3);
+                gameResult.textContent = `反応速度: ${reaction} 秒`;
+                resetGame('もう一度プレイできます');
+            } else if (gameState === 'waiting') {
+                resetGame('早すぎます...');
+            }
         });
     </script>
 </body>

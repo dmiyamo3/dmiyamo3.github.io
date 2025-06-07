@@ -624,3 +624,48 @@ body.dark .ai-disclaimer strong {
 .ai-disclaimer strong {
     color: var(--c-accent);
 }
+
+/* ---- Reflex Game ---- */
+#reflex-game {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+#game-area {
+    margin: 1.5rem auto;
+    width: 100%;
+    max-width: 300px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: hsl(0, 70%, 55%);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.1rem;
+}
+
+#game-area.ready {
+    background: hsl(140, 70%, 40%);
+}
+
+#start-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.game-result {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+body.dark #game-area {
+    background: hsl(0, 70%, 45%);
+}
+
+body.dark #game-area.ready {
+    background: hsl(140, 70%, 35%);
+}
