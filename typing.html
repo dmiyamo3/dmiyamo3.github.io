@@ -69,28 +69,29 @@ button:hover:not(:disabled){background:#1565c0}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/wanakana@4.0.2/wanakana.min.js"></script>
 <script>
 const texts = {
   easy: [
-    "こんにちは世界",
-    "今日はいい天気ですね",
-    "プログラミングは楽しいです",
-    "タイピングの練習をしています",
-    "コンピューターを使って作業します"
+    "りんご",
+    "ねこ",
+    "さかな",
+    "たいよう",
+    "やま"
   ],
   medium: [
-    "JavaScript言語を使ってWebアプリケーションを開発しています",
-    "人工知能と機械学習の技術が急速に発展している現代において",
-    "効率的なアルゴリズムの設計と実装は重要なスキルです",
-    "ユーザーエクスペリエンスを向上させるためのインターフェース設計",
-    "データベースの最適化とパフォーマンスチューニングの手法"
+    "わたしはりんごがすきです",
+    "あしたはあめがふるかもしれません",
+    "にほんのぶんかはおもしろいです",
+    "こうえんでともだちとあそびました",
+    "おいしいごはんをたべたいです"
   ],
   hard: [
-    "非同期処理におけるPromiseとasync/awaitの使い分けを理解することで、より効率的なJavaScriptコードを書くことができます",
-    "関数型プログラミングのパラダイムでは、不変性と高階関数を活用して副作用のないプログラムを構築することが重要です",
-    "マイクロサービスアーキテクチャの採用により、システムの可用性とスケーラビリティを向上させることができます",
-    "機械学習モデルの訓練において、過学習を防ぐための正則化技術やクロスバリデーションの適用が不可欠です",
-    "量子コンピューティングは従来の計算機科学の限界を超える可能性を秘めた革新的な技術分野として注目されています"
+    "しょうらいはがいこくでべんきょうしたいとおもっています",
+    "あさおきるとまどのそとからとりのさえずりがきこえてきました",
+    "けんこうのためにはまいにちうんどうすることがたいせつです",
+    "ぷろぐらみんぐをまなぶことでさまざまなもんだいをかいけつできます",
+    "びょういんでながいじかんまつことになりましたがほんをよんでいたのでたいくつしませんでした"
   ]
 };
 
@@ -100,8 +101,10 @@ let startTime = null;
 let gameTime = 60;
 let timeLeft = gameTime;
 let gameActive = false;
-let correctChars = 0;
-let totalChars = 0;
+let correctChars = 0;      // 累計の正しい文字数(かな)
+let totalChars = 0;        // 累計の入力文字数(ローマ字)
+let correctCurrent = 0;    // 現在のテキストでの正しい文字数
+let totalCurrent = 0;      // 現在のテキストでの入力文字数
 let currentDifficulty = 'easy';
 let gameInterval = null;
 
@@ -141,36 +144,35 @@ function getRandomText() {
 }
 
 function displayText() {
+  const typed = wanakana.toHiragana(inputArea.value);
   let displayHTML = '';
   for (let i = 0; i < currentText.length; i++) {
     const char = currentText[i];
-    if (i < currentPosition) {
-      // 入力済み文字
-      const inputChar = inputArea.value[i];
-      if (inputChar === char) {
+    if (i < typed.length) {
+      if (typed[i] === char) {
         displayHTML += `<span class="correct-char">${char}</span>`;
       } else {
         displayHTML += `<span class="incorrect-char">${char}</span>`;
       }
-    } else if (i === currentPosition) {
-      // 現在の文字
+    } else if (i === typed.length) {
       displayHTML += `<span class="current-char">${char}</span>`;
     } else {
-      // 未入力文字
       displayHTML += char;
     }
   }
+  currentPosition = typed.length;
   textDisplay.innerHTML = displayHTML;
 }
 
 function updateStats() {
   if (!startTime) return;
-  
+
   const timeElapsed = (Date.now() - startTime) / 1000 / 60; // 分
-  const wordsTyped = correctChars / 5; // 5文字 = 1単語として計算
+  const wordsTyped = (correctChars + correctCurrent) / 5;
   const wpm = Math.round(wordsTyped / timeElapsed) || 0;
-  const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
-  
+  const accuracyBase = totalChars + totalCurrent;
+  const accuracy = accuracyBase > 0 ? Math.round(((correctChars + correctCurrent) / accuracyBase) * 100) : 100;
+
   wpmElement.textContent = wpm;
   accuracyElement.textContent = accuracy + '%';
 }
@@ -180,6 +182,8 @@ function startGame() {
   currentPosition = 0;
   correctChars = 0;
   totalChars = 0;
+  correctCurrent = 0;
+  totalCurrent = 0;
   timeLeft = gameTime;
   gameActive = true;
   startTime = Date.now();
@@ -210,12 +214,18 @@ function endGame() {
   startBtn.disabled = false;
   resetBtn.disabled = true;
   textDisplay.classList.remove('active');
-  
+
   if (gameInterval) {
     clearInterval(gameInterval);
     gameInterval = null;
   }
-  
+
+  // 最終入力分を集計
+  correctChars += correctCurrent;
+  totalChars += totalCurrent;
+  correctCurrent = 0;
+  totalCurrent = 0;
+
   // 最終結果を計算
   const timeElapsed = (Date.now() - startTime) / 1000 / 60;
   const wordsTyped = correctChars / 5;
@@ -242,6 +252,8 @@ function resetGame() {
   currentPosition = 0;
   correctChars = 0;
   totalChars = 0;
+  correctCurrent = 0;
+  totalCurrent = 0;
   timeLeft = gameTime;
   startTime = null;
   
@@ -261,31 +273,41 @@ function resetGame() {
 // 入力イベント
 inputArea.addEventListener('input', (e) => {
   if (!gameActive) return;
-  
+
   const inputValue = e.target.value;
-  totalChars = inputValue.length;
-  currentPosition = inputValue.length;
-  
-  // 正確な文字数をカウント
-  correctChars = 0;
-  for (let i = 0; i < Math.min(inputValue.length, currentText.length); i++) {
-    if (inputValue[i] === currentText[i]) {
-      correctChars++;
+  totalCurrent = inputValue.length;
+  const typed = wanakana.toHiragana(inputValue);
+  correctCurrent = 0;
+  for (let i = 0; i < Math.min(typed.length, currentText.length); i++) {
+    if (typed[i] === currentText[i]) {
+      correctCurrent++;
     }
   }
-  
+
   displayText();
   updateStats();
-  
-  // 完了チェック
-  if (inputValue === currentText) {
-    // 次のテキストに進む
-    setTimeout(() => {
-      currentText = getRandomText();
-      inputArea.value = '';
-      currentPosition = 0;
-      displayText();
-    }, 500);
+});
+
+function checkInputComplete() {
+  const inputValue = inputArea.value.trim();
+  const typed = wanakana.toHiragana(inputValue);
+  if (typed === currentText) {
+    correctChars += currentText.length;
+    totalChars += inputValue.length;
+    inputArea.value = '';
+    correctCurrent = 0;
+    totalCurrent = 0;
+    currentText = getRandomText();
+    displayText();
+    updateStats();
+  }
+}
+
+inputArea.addEventListener('keydown', (e) => {
+  if (!gameActive) return;
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    checkInputComplete();
   }
 });
 
