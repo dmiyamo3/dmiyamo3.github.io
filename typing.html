@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Typing Speed Game</title>
+<style>
+html,body{height:100%;margin:0;font-family:sans-serif;text-align:center;background:#f0f0f0}
+.container{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;padding:1rem;box-sizing:border-box}
+#gameArea{width:90%;max-width:600px;margin:2rem auto;padding:2rem;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+#textDisplay{min-height:4rem;padding:1rem;margin:1rem 0;background:#f8f9fa;border-radius:8px;font-size:1.2rem;line-height:1.5;border:2px solid #e9ecef}
+#textDisplay.active{border-color:#1976d2}
+.current-char{background:#ffeb3b;padding:0 2px}
+.correct-char{background:#4caf50;color:#fff;padding:0 2px}
+.incorrect-char{background:#f44336;color:#fff;padding:0 2px}
+#inputArea{width:100%;padding:0.8rem;font-size:1.1rem;border:2px solid #ddd;border-radius:6px;margin:1rem 0;box-sizing:border-box}
+#inputArea:focus{outline:none;border-color:#1976d2}
+#stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1rem 0;text-align:center}
+.stat-item{padding:0.8rem;background:#e3f2fd;border-radius:6px}
+.stat-value{font-size:1.5rem;font-weight:bold;color:#1976d2}
+.stat-label{font-size:0.9rem;color:#666;margin-top:0.2rem}
+button{margin:0.5rem;padding:0.8rem 1.5rem;font-size:1rem;border:none;border-radius:6px;background:#1976d2;color:#fff;cursor:pointer}
+button:disabled{background:#888;cursor:not-allowed}
+button:hover:not(:disabled){background:#1565c0}
+#results{margin-top:2rem;padding:1.5rem;background:#e8f5e8;border-radius:8px;display:none}
+.difficulty-selector{margin:1rem 0}
+.difficulty-btn{margin:0 0.25rem;padding:0.5rem 1rem;font-size:0.9rem;background:#e0e0e0;color:#333}
+.difficulty-btn.active{background:#1976d2;color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Typing Speed Game</h1>
+  <p>表示されたテキストを正確に入力してください。速度と正確性を競いましょう！</p>
+  
+  <div id="gameArea">
+    <div class="difficulty-selector">
+      <button class="difficulty-btn active" data-level="easy">簡単</button>
+      <button class="difficulty-btn" data-level="medium">普通</button>
+      <button class="difficulty-btn" data-level="hard">難しい</button>
+    </div>
+    
+    <div id="textDisplay">クリックしてスタート</div>
+    <input type="text" id="inputArea" placeholder="ここに入力してください..." disabled>
+    
+    <div id="stats">
+      <div class="stat-item">
+        <div class="stat-value" id="wpm">0</div>
+        <div class="stat-label">WPM</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="accuracy">100%</div>
+        <div class="stat-label">正確性</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="timer">60</div>
+        <div class="stat-label">残り時間</div>
+      </div>
+    </div>
+    
+    <button id="startBtn">スタート</button>
+    <button id="resetBtn" disabled>リセット</button>
+    
+    <div id="results">
+      <h3>結果</h3>
+      <p>お疲れ様でした！</p>
+      <div id="finalStats"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const texts = {
+  easy: [
+    "こんにちは世界",
+    "今日はいい天気ですね",
+    "プログラミングは楽しいです",
+    "タイピングの練習をしています",
+    "コンピューターを使って作業します"
+  ],
+  medium: [
+    "JavaScript言語を使ってWebアプリケーションを開発しています",
+    "人工知能と機械学習の技術が急速に発展している現代において",
+    "効率的なアルゴリズムの設計と実装は重要なスキルです",
+    "ユーザーエクスペリエンスを向上させるためのインターフェース設計",
+    "データベースの最適化とパフォーマンスチューニングの手法"
+  ],
+  hard: [
+    "非同期処理におけるPromiseとasync/awaitの使い分けを理解することで、より効率的なJavaScriptコードを書くことができます",
+    "関数型プログラミングのパラダイムでは、不変性と高階関数を活用して副作用のないプログラムを構築することが重要です",
+    "マイクロサービスアーキテクチャの採用により、システムの可用性とスケーラビリティを向上させることができます",
+    "機械学習モデルの訓練において、過学習を防ぐための正則化技術やクロスバリデーションの適用が不可欠です",
+    "量子コンピューティングは従来の計算機科学の限界を超える可能性を秘めた革新的な技術分野として注目されています"
+  ]
+};
+
+let currentText = '';
+let currentPosition = 0;
+let startTime = null;
+let gameTime = 60;
+let timeLeft = gameTime;
+let gameActive = false;
+let correctChars = 0;
+let totalChars = 0;
+let currentDifficulty = 'easy';
+let gameInterval = null;
+
+const textDisplay = document.getElementById('textDisplay');
+const inputArea = document.getElementById('inputArea');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const wpmElement = document.getElementById('wpm');
+const accuracyElement = document.getElementById('accuracy');
+const timerElement = document.getElementById('timer');
+const resultsDiv = document.getElementById('results');
+const finalStatsDiv = document.getElementById('finalStats');
+const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+
+// 難易度選択
+difficultyBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (gameActive) return;
+    
+    difficultyBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDifficulty = btn.dataset.level;
+    
+    // 難易度に応じて制限時間を調整
+    if (currentDifficulty === 'easy') gameTime = 60;
+    else if (currentDifficulty === 'medium') gameTime = 90;
+    else gameTime = 120;
+    
+    timeLeft = gameTime;
+    timerElement.textContent = timeLeft;
+  });
+});
+
+function getRandomText() {
+  const textArray = texts[currentDifficulty];
+  return textArray[Math.floor(Math.random() * textArray.length)];
+}
+
+function displayText() {
+  let displayHTML = '';
+  for (let i = 0; i < currentText.length; i++) {
+    const char = currentText[i];
+    if (i < currentPosition) {
+      // 入力済み文字
+      const inputChar = inputArea.value[i];
+      if (inputChar === char) {
+        displayHTML += `<span class="correct-char">${char}</span>`;
+      } else {
+        displayHTML += `<span class="incorrect-char">${char}</span>`;
+      }
+    } else if (i === currentPosition) {
+      // 現在の文字
+      displayHTML += `<span class="current-char">${char}</span>`;
+    } else {
+      // 未入力文字
+      displayHTML += char;
+    }
+  }
+  textDisplay.innerHTML = displayHTML;
+}
+
+function updateStats() {
+  if (!startTime) return;
+  
+  const timeElapsed = (Date.now() - startTime) / 1000 / 60; // 分
+  const wordsTyped = correctChars / 5; // 5文字 = 1単語として計算
+  const wpm = Math.round(wordsTyped / timeElapsed) || 0;
+  const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+  
+  wpmElement.textContent = wpm;
+  accuracyElement.textContent = accuracy + '%';
+}
+
+function startGame() {
+  currentText = getRandomText();
+  currentPosition = 0;
+  correctChars = 0;
+  totalChars = 0;
+  timeLeft = gameTime;
+  gameActive = true;
+  startTime = Date.now();
+  
+  displayText();
+  inputArea.disabled = false;
+  inputArea.focus();
+  inputArea.value = '';
+  startBtn.disabled = true;
+  resetBtn.disabled = false;
+  resultsDiv.style.display = 'none';
+  textDisplay.classList.add('active');
+  
+  // タイマー開始
+  gameInterval = setInterval(() => {
+    timeLeft--;
+    timerElement.textContent = timeLeft;
+    
+    if (timeLeft <= 0) {
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  gameActive = false;
+  inputArea.disabled = true;
+  startBtn.disabled = false;
+  resetBtn.disabled = true;
+  textDisplay.classList.remove('active');
+  
+  if (gameInterval) {
+    clearInterval(gameInterval);
+    gameInterval = null;
+  }
+  
+  // 最終結果を計算
+  const timeElapsed = (Date.now() - startTime) / 1000 / 60;
+  const wordsTyped = correctChars / 5;
+  const finalWPM = Math.round(wordsTyped / timeElapsed) || 0;
+  const finalAccuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+  
+  // 結果表示
+  finalStatsDiv.innerHTML = `
+    <p><strong>最終速度:</strong> ${finalWPM} WPM</p>
+    <p><strong>正確性:</strong> ${finalAccuracy}%</p>
+    <p><strong>正確に入力した文字:</strong> ${correctChars}文字</p>
+    <p><strong>総入力文字数:</strong> ${totalChars}文字</p>
+  `;
+  resultsDiv.style.display = 'block';
+}
+
+function resetGame() {
+  if (gameInterval) {
+    clearInterval(gameInterval);
+    gameInterval = null;
+  }
+  
+  gameActive = false;
+  currentPosition = 0;
+  correctChars = 0;
+  totalChars = 0;
+  timeLeft = gameTime;
+  startTime = null;
+  
+  textDisplay.innerHTML = 'クリックしてスタート';
+  textDisplay.classList.remove('active');
+  inputArea.value = '';
+  inputArea.disabled = true;
+  startBtn.disabled = false;
+  resetBtn.disabled = true;
+  resultsDiv.style.display = 'none';
+  
+  wpmElement.textContent = '0';
+  accuracyElement.textContent = '100%';
+  timerElement.textContent = gameTime;
+}
+
+// 入力イベント
+inputArea.addEventListener('input', (e) => {
+  if (!gameActive) return;
+  
+  const inputValue = e.target.value;
+  totalChars = inputValue.length;
+  currentPosition = inputValue.length;
+  
+  // 正確な文字数をカウント
+  correctChars = 0;
+  for (let i = 0; i < Math.min(inputValue.length, currentText.length); i++) {
+    if (inputValue[i] === currentText[i]) {
+      correctChars++;
+    }
+  }
+  
+  displayText();
+  updateStats();
+  
+  // 完了チェック
+  if (inputValue === currentText) {
+    // 次のテキストに進む
+    setTimeout(() => {
+      currentText = getRandomText();
+      inputArea.value = '';
+      currentPosition = 0;
+      displayText();
+    }, 500);
+  }
+});
+
+// イベントリスナー
+startBtn.addEventListener('click', startGame);
+resetBtn.addEventListener('click', resetGame);
+
+// 初期化
+resetGame();
+</script>
+</body>
+</html>
