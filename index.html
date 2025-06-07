@@ -13,6 +13,7 @@
 <body>
     <header>
         <h1>Miyamo's Portfolio</h1>
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
         <nav>
             <ul>
                 <li><a href="#about">About</a></li>
@@ -21,6 +22,9 @@
             </ul>
         </nav>
     </header>
+    <section id="hero" class="hero">
+        <p class="hero-tagline">Explore VR, AR and math driven creations.</p>
+    </section>
     <div class="ai-disclaimer">
         <p><strong>【お知らせ】</strong>このポートフォリオサイトは、AI (GitHub Copilot) との協力のもと作成されました。情報が完全に正確でない場合や、表現に不自然な点がある可能性もございます。ご理解いただけますと幸いです。</p>
     </div>
@@ -189,5 +193,11 @@
     <footer>
         <p>&copy; 2025 miyamo</p>
     </footer>
+    <script>
+        const btn = document.getElementById('theme-toggle');
+        btn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+        });
+    </script>
 </body>
 </html>
