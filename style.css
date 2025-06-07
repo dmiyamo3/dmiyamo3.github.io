@@ -450,9 +450,11 @@ footer {
 .ai-disclaimer {
     background: var(--c-secondary);
     color: var(--c-text-light);
-    padding: 1rem;
-    margin: 0 auto 2rem auto;
-    max-width: 900px;
+    padding: 1rem; /* 内側の余白 */
+    margin: 0 auto 2rem auto; /* 上下マージンと左右autoで中央寄せ */
+    width: 100%; /* 親要素に対して幅100%を試みる */
+    max-width: 900px; /* ただし最大幅は900px (main要素と合わせる) */
+    box-sizing: border-box; /* paddingとborderをwidth/heightに含める */
     text-align: center;
     border-radius: 8px;
     font-size: 0.9rem;
