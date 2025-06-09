@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games | Miyamo's Portfolio</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .game-card {
+            background: var(--c-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid var(--c-border);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--c-dark);
+        }
+        
+        .game-description {
+            color: var(--c-text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .play-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--c-primary), var(--c-accent));
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin: 2rem auto;
+            text-align: center;
+            color: var(--c-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <main style="padding: 2rem 0; min-height: 100vh;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="color: var(--c-primary); margin-bottom: 0.5rem;">🎮 Mini Games</h1>
+            <p style="color: var(--c-text-light); font-size: 1.1rem;">Interactive games that also serve as technical demos</p>
+        </div>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="game-icon">🎯</div>
+                <h2 class="game-title">Reflex Tap</h2>
+                <p class="game-description">
+                    A reaction time measurement game. Test your reflexes by measuring the average response time of 3 attempts.
+                </p>
+                <a href="reflex/" class="play-btn">Play</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">🔢</div>
+                <h2 class="game-title">Prime Cascade</h2>
+                <p class="game-description">
+                    A prime number chain elimination game. Educational entertainment combining physics simulation and mathematical theory. Developed in collaboration with Claude Code.
+                </p>
+                <a href="prime-cascade/" class="play-btn">Play</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="../../ja/games/" class="back-link" style="margin-right: 2rem;">🌐 日本語</a>
+            <a href="../index.html" class="back-link">← Back to Portfolio</a>
+        </div>
+    </main>
+</body>
+</html>
