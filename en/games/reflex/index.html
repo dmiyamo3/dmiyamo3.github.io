@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reflex Game</title>
+<style>
+html,body{height:100%;margin:0;font-family:sans-serif;text-align:center;background:#f0f0f0}
+.container{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%}
+#circle{width:60vmin;height:60vmin;margin:2rem auto;border-radius:50%;background:#bbb;display:flex;align-items:center;justify-content:center;color:#fff;font-size:4vmin;user-select:none}
+#info{margin-top:1rem;font-size:1.2rem}
+button{margin-top:1.5rem;padding:0.6rem 1.2rem;font-size:1rem;border:none;border-radius:4px;background:#1976d2;color:#fff}
+button:disabled{background:#888}
+.language-links{position:absolute;top:1rem;left:1rem}
+.language-links a{color:#1976d2;text-decoration:none;margin-right:1rem}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="language-links">
+    <a href="../../../ja/games/reflex/">🌐 日本語</a>
+    <a href="../../index.html">← Back to Portfolio</a>
+  </div>
+  <h1>Reflex Game</h1>
+  <p>Tap quickly when the circle turns green. We'll measure your average reaction time over 3 attempts.</p>
+  <div id="circle">Start</div>
+  <div id="info"></div>
+  <button id="startBtn">Start</button>
+</div>
+<script>
+let state=0,start,results=[];
+const circle=document.getElementById('circle');
+const info=document.getElementById('info');
+const startBtn=document.getElementById('startBtn');
+
+function reset(){
+  results=[];
+  info.textContent='';
+}
+
+function nextRound(){
+  state=1;
+  circle.style.background='red';
+  circle.textContent='Wait...';
+  setTimeout(()=>{
+    circle.style.background='green';
+    circle.textContent='Tap!';
+    start=Date.now();
+    state=2;
+  },1000+Math.random()*2000);
+}
+
+function endGame(){
+  const avg=Math.round(results.reduce((a,b)=>a+b)/results.length);
+  circle.style.background='#333';
+  circle.textContent=`Avg ${avg}ms`;
+  info.textContent='Press Start to play again';
+  startBtn.disabled=false;
+  state=3;
+}
+
+function startGame(){
+  reset();
+  startBtn.disabled=true;
+  nextRound();
+}
+
+circle.addEventListener('pointerdown',()=>{
+  if(state!==2)return;
+  const t=Date.now()-start;
+  results.push(t);
+  circle.textContent=`${t} ms`;
+  if(results.length>=3){
+    endGame();
+  }else{
+    setTimeout(nextRound,500);
+  }
+});
+
+startBtn.addEventListener('click',startGame);
+</script>
+</body>
+</html>

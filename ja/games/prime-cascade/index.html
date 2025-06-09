@@ -129,10 +129,13 @@
             color: #667eea;
         }
 
-        .back-link {
+        .language-links {
             position: absolute;
             top: 1rem;
             left: 1rem;
+        }
+
+        .language-links a {
             color: white;
             text-decoration: none;
             font-weight: 600;
@@ -140,9 +143,11 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            display: inline-block;
         }
 
-        .back-link:hover {
+        .language-links a:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-1px);
         }
@@ -224,7 +229,10 @@
     </style>
 </head>
 <body>
-    <a href="../../index.html" class="back-link">← ポートフォリオに戻る</a>
+    <div class="language-links">
+        <a href="../../../en/games/prime-cascade/">🌐 English</a>
+        <a href="../../../index.html">← ポートフォリオに戻る</a>
+    </div>
     
     <div class="game-container">
         <h1>🔢 Prime Cascade</h1>
