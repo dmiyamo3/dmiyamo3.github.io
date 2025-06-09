@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miyamo's Portfolio - VR/AR Creator & Math Visualizer</title>
+    <meta name="description" content="VR/AR技術と数学の融合を探求するクリエイティブテクノロジスト。Looking Glass、Oculus、HoloLensを使った革新的プロジェクトを展示。">
+    <meta property="og:title" content="Miyamo's Portfolio - VR/AR Creator">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dmiyamo3.github.io/images/og-image.jpg">
+    <meta property="og:description" content="VR/AR技術と数学の融合を探求するクリエイティブテクノロジスト">
+    <meta property="og:url" content="https://dmiyamo3.github.io">
+    <link rel="canonical" href="https://dmiyamo3.github.io">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Miyamo",
+        "jobTitle": "VR/AR Developer & Creative Technologist",
+        "url": "https://dmiyamo3.github.io",
+        "sameAs": [
+            "https://github.com/dmiyamo3",
+            "https://twitter.com/DMiyamo3"
+        ],
+        "knowsAbout": ["Virtual Reality", "Augmented Reality", "3D Programming", "Mathematical Visualization"],
+        "alumniOf": "札幌 VR/AR Community"
+    }
+    </script>
+    
+    <style>
+        /* === CSS Variables === */
+        :root {
+            --color-primary: hsl(240, 100%, 67%);
+            --color-secondary: hsl(330, 85%, 65%);
+            --color-accent: hsl(45, 100%, 60%);
+            --color-success: hsl(120, 60%, 50%);
+            
+            --color-text: hsl(220, 15%, 20%);
+            --color-text-muted: hsl(220, 10%, 45%);
+            --color-bg: hsl(220, 40%, 98%);
+            --color-surface: hsl(220, 30%, 96%);
+            --color-border: hsl(220, 20%, 88%);
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.1);
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* === Dark Mode === */
+        [data-theme="dark"] {
+            --color-text: hsl(220, 15%, 85%);
+            --color-text-muted: hsl(220, 10%, 65%);
+            --color-bg: hsl(220, 20%, 8%);
+            --color-surface: hsl(220, 15%, 12%);
+            --color-border: hsl(220, 15%, 20%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* === Reset & Base === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        /* === Typography === */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+        }
+
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+        h2 { font-size: clamp(2rem, 4vw, 3rem); }
+        h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+        h4 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
+
+        /* === Layout === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        .grid {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+        /* === Header === */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-md) 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: var(--space-lg);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-links a:hover {
+            background: var(--color-surface);
+            color: var(--color-primary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--color-primary);
+            transform: rotate(180deg);
+        }
+
+        /* === Hero Section === */
+        .hero {
+            padding: var(--space-2xl) 0;
+            text-align: center;
+            background: linear-gradient(135deg, 
+                var(--color-bg) 0%, 
+                var(--color-surface) 50%, 
+                var(--color-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, var(--color-primary), transparent 50%),
+                        radial-gradient(circle at 70% 80%, var(--color-secondary), transparent 50%);
+            opacity: 0.05;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            margin-bottom: var(--space-md);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* === Buttons === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-text);
+            border: 2px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* === Cards === */
+        .card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--color-border);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            margin-bottom: var(--space-md);
+        }
+
+        .card-title {
+            margin-bottom: var(--space-xs);
+            color: var(--color-text);
+        }
+
+        .card-meta {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card-content {
+            margin-bottom: var(--space-md);
+        }
+
+        .card-footer {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .card-image {
+            width: calc(100% + 2 * var(--space-lg));
+            height: 200px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            margin: calc(-1 * var(--space-lg)) 0 var(--space-md) calc(-1 * var(--space-lg));
+        }
+
+        /* === Featured Works === */
+        .featured-work {
+            background: linear-gradient(135deg, var(--color-surface), var(--color-bg));
+            border: 2px solid var(--color-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        /* === Tech Stack === */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+        }
+
+        .tech-tag {
+            background: var(--color-primary);
+            color: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .tech-tag.secondary {
+            background: var(--color-text-muted);
+        }
+
+        /* === Timeline === */
+        .timeline {
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--color-border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: var(--space-2xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            border: 3px solid var(--color-bg);
+        }
+
+        /* === Stats === */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            text-align: center;
+            margin: var(--space-xl) 0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        /* === Games Section === */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, var(--color-surface), var(--color-bg));
+            border: 2px solid var(--color-accent);
+            text-align: center;
+        }
+
+        .game-card:hover {
+            border-color: var(--color-primary);
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+        }
+
+        /* === Footer === */
+        .footer {
+            background: var(--color-surface);
+            padding: var(--space-xl) 0 var(--space-lg);
+            margin-top: var(--space-2xl);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* === Animations === */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* === Scroll Animations === */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">Miyamo</div>
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#works">Works</a></li>
+                    <li><a href="#games">Games</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content fade-in-up">
+                <h1 class="hero-title">VR/AR Creator & Math Visualizer</h1>
+                <p class="hero-subtitle">
+                    仮想現実と数学の美しさを融合させ、新しい体験を創造するクリエイティブテクノロジスト
+                </p>
+                <div class="hero-cta">
+                    <a href="#works" class="btn btn-primary">
+                        🎨 作品を見る
+                    </a>
+                    <a href="#games" class="btn btn-secondary">
+                        🎮 ゲームで遊ぶ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="container">
+        <div class="stats scroll-reveal">
+            <div>
+                <span class="stat-number">20+</span>
+                <span class="stat-label">プロジェクト</span>
+            </div>
+            <div>
+                <span class="stat-number">15+</span>
+                <span class="stat-label">展示・発表</span>
+            </div>
+            <div>
+                <span class="stat-number">7</span>
+                <span class="stat-label">年間の活動</span>
+            </div>
+            <div>
+                <span class="stat-number">5+</span>
+                <span class="stat-label">技術スタック</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container">
+        <div class="scroll-reveal">
+            <h2>About Me</h2>
+            <div class="grid grid-2" style="margin-top: 2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🥽 VR/AR Development</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Oculus Quest、HoloLens、Looking Glassを使った革新的な体験設計。物理法則を超えた新しいインタラクションの創造。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Unity</span>
+                        <span class="tech-tag">C#</span>
+                        <span class="tech-tag">OpenXR</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔢 Mathematical Visualization</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>複素関数、素数理論、幾何学を3D空間で表現。数学の美しさを直感的に体験できる作品群。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">WebGL</span>
+                        <span class="tech-tag">HLSL</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🛠️ Creative Tools</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>3Dアーティスト向けBlenderアドオン、VR用入力システムなど、クリエイターの創作を支援するツール開発。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Blender API</span>
+                        <span class="tech-tag">GitHub</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎪 Exhibition & Community</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>技術コミュニティでの積極的な発表・展示活動。VR/ARの可能性を広げる実験的アプローチ。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag secondary">JapanVRFest</span>
+                        <span class="tech-tag secondary">日曜数学会</span>
+                        <span class="tech-tag secondary">HoloLens Meetup</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Works -->
+    <section id="works" class="container">
+        <div class="scroll-reveal">
+            <h2>Featured Works</h2>
+            <div class="grid grid-2" style="margin-top: 2rem;">
+                
+                <div class="card featured-work">
+                    <img src="images/virtual-flashlight.jpg" alt="バーチャル懐中電灯" class="card-image" loading="lazy">
+                    <div class="card-header">
+                        <h3 class="card-title">🔦 バーチャル懐中電灯</h3>
+                        <div class="card-meta">2019 JapanVRFest・NT札幌</div>
+                    </div>
+                    <div class="card-content">
+                        <p>実際の光源がなくても3Dオブジェクトを照らす革新的実験。Looking GlassとRealSenseを組み合わせた動的ライティング技術。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Looking Glass</span>
+                        <span class="tech-tag">RealSense</span>
+                        <span class="tech-tag">Unity</span>
+                    </div>
+                </div>
+
+                <div class="card featured-work">
+                    <img src="images/vr-typing-game.jpg" alt="一字一拳" class="card-image" loading="lazy">
+                    <div class="card-header">
+                        <h3 class="card-title">🥊 一字一拳</h3>
+                        <div class="card-meta">2019 札幌HoloLensミートアップ</div>
+                    </div>
+                    <div class="card-content">
+                        <p>VRタイピングゲーム。パンチングキーボードを使って文字入力の速さを競う、VRならではの新しい入力方法の提案。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Oculus Quest</span>
+                        <span class="tech-tag">Hand Tracking</span>
+                        <span class="tech-tag">C#</span>
+                    </div>
+                </div>
+
+                <div class="card featured-work">
+                    <img src="images/prime-clock.jpg" alt="素数秒時計" class="card-image" loading="lazy">
+                    <div class="card-header">
+                        <h3 class="card-title">🔢 素数秒時計</h3>
+                        <div class="card-meta">2020 第4回日曜数学会</div>
+                    </div>
+                    <div class="card-content">
+                        <p>素数の瞬間に音が鳴る数学的な時計。四つ子素数が鳴る瞬間が最も盛り上がった伝説の作品。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">Web Audio</span>
+                        <span class="tech-tag">Number Theory</span>
+                    </div>
+                </div>
+
+                <div class="card featured-work">
+                    <div class="card-header">
+                        <h3 class="card-title">🎮 Prime Cascade</h3>
+                        <div class="card-meta">2025 Claude Code 協力開発</div>
+                    </div>
+                    <div class="card-content">
+                        <p>素数連鎖消去ゲーム。数学教育とゲーミフィケーションを融合し、物理演算により自然な動きを実現。</p>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Canvas 2D</span>
+                        <span class="tech-tag">Physics Engine</span>
+                        <span class="tech-tag">Claude Code</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Timeline -->
+            <div style="margin-top: 3rem;">
+                <h3>Technical Journey</h3>
+                <div class="timeline" style="margin-top: 2rem;">
+                    <div class="timeline-item">
+                        <h4>2023 - VisionPro Era</h4>
+                        <p>QuestProでVisionPro操作を再現。アイトラッキング×ハンドトラッキングの次世代UI研究。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2020 - Math Community</h4>
+                        <p>素数秒時計で日曜数学会デビュー。数学的可視化への本格参入。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2019 - VR Breakthrough</h4>
+                        <p>バーチャル懐中電灯でJapanVRFest参加。Looking Glass技術の先駆的活用。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2018 - Community Engagement</h4>
+                        <p>札幌VR/ARコミュニティで積極的活動開始。技術デモとアイデア共有。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2016 - Origins</h4>
+                        <p>ゼータ関数VRで3D数学可視化の世界へ。数学×技術の探求開始。</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Games -->
+    <section id="games" class="container">
+        <div class="scroll-reveal">
+            <h2>Interactive Games</h2>
+            <p style="text-align: center; color: var(--color-text-muted); margin-bottom: 2rem;">
+                ポートフォリオサイト自体も技術デモ。実際にプレイできるゲームで技術力を体験してください。
+            </p>
+            
+            <div class="games-grid">
+                <div class="card game-card">
+                    <div class="game-icon">🎯</div>
+                    <h3>Reflex Tap</h3>
+                    <p>反射神経測定ゲーム。3回の平均反応時間を計測し、あなたの反射神経をテストします。</p>
+                    <a href="reflex.html" class="btn btn-primary" style="margin-top: 1rem;">プレイする</a>
+                </div>
+
+                <div class="card game-card">
+                    <div class="game-icon">🔢</div>
+                    <h3>Prime Cascade</h3>
+                    <p>素数連鎖消去ゲーム。物理演算と数学理論を組み合わせた教育的エンターテインメント。</p>
+                    <a href="prime-cascade.html" class="btn btn-primary" style="margin-top: 1rem;">プレイする</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="container">
+        <div class="scroll-reveal">
+            <div class="card" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <h2>Let's Collaborate</h2>
+                <p style="margin: 1rem 0 2rem;">VR/AR技術、数学的可視化、クリエイティブコーディングに関するプロジェクトでご一緒できれば嬉しいです。</p>
+                
+                <div class="hero-cta">
+                    <a href="https://twitter.com/DMiyamo3" class="btn btn-primary" target="_blank" rel="noopener">
+                        🐦 Twitter
+                    </a>
+                    <a href="https://github.com/dmiyamo3" class="btn btn-secondary" target="_blank" rel="noopener">
+                        📚 GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="social-links">
+                    <a href="https://github.com/dmiyamo3" target="_blank" rel="noopener">
+                        📚 GitHub
+                    </a>
+                    <a href="https://twitter.com/DMiyamo3" target="_blank" rel="noopener">
+                        🐦 Twitter
+                    </a>
+                    <a href="https://github.com/dmiyamo3/miyamo-notebook/blob/master/works.md" target="_blank" rel="noopener">
+                        📖 Full Portfolio
+                    </a>
+                </div>
+                <p style="color: var(--color-text-muted); font-size: 0.9rem;">
+                    © 2025 Miyamo. Built with ❤️ and modern web technologies.
+                </p>
+                <p style="color: var(--color-text-muted); font-size: 0.8rem; margin-top: 0.5rem;">
+                    🤖 Enhanced with <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color: var(--color-primary);">Claude Code</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Smooth Scrolling for Navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add Loading Animation
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Parallax Effect for Hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

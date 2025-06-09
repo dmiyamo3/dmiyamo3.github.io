@@ -29,6 +29,10 @@ body, h1, h2, h3, h4, p, ul, li, img, a {
     
     --c-text-light: hsl(220, 15%, 40%);
     --c-border: hsl(220, 20%, 88%);
+    
+    /* Claude Portfolio Section */
+    --c-claude: hsl(265, 85%, 58%);
+    --c-claude-bg: hsl(265, 25%, 98%);
 }
 
 /* 基本スタイル */
@@ -504,4 +508,112 @@ body.dark .ai-disclaimer strong {
 
 .ai-disclaimer strong {
     color: var(--c-accent);
+}
+
+/* Claude Code Enhanced Portfolio Section */
+.claude-portfolio-section {
+    margin: 2rem auto;
+    max-width: 900px;
+    padding: 0 1rem;
+}
+
+.claude-portfolio-card {
+    background: linear-gradient(135deg, var(--c-claude-bg), var(--c-secondary));
+    border: 3px solid var(--c-claude);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.claude-portfolio-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.claude-portfolio-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.claude-portfolio-card:hover::before {
+    opacity: 1;
+}
+
+.claude-portfolio-content h3 {
+    color: var(--c-claude);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.claude-portfolio-content p {
+    color: var(--c-text-light);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.portfolio-features {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.feature-tag {
+    background: var(--c-claude);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.claude-portfolio-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--c-claude), var(--c-accent));
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.claude-portfolio-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(135deg, var(--c-accent), var(--c-claude));
+}
+
+/* Dark mode styles for Claude section */
+body.dark .claude-portfolio-card {
+    background: linear-gradient(135deg, hsl(265, 15%, 15%), hsl(220, 10%, 18%));
+    border-color: var(--c-claude);
+}
+
+body.dark .claude-portfolio-content h3 {
+    color: var(--c-claude);
+}
+
+body.dark .claude-portfolio-content p {
+    color: var(--c-light);
+}
+
+body.dark .feature-tag {
+    background: var(--c-claude);
 }
