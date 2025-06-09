@@ -339,138 +339,15 @@ footer {
     color: var(--c-light);
 }
 
-/* --- ダークモード --- */
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* ダークモード用に調整された明るいカラー */
-        --c-about-dark: hsl(190, 55%, 75%);
-        --c-featured-dark: hsl(280, 55%, 75%);
-        --c-vr-dark: hsl(210, 55%, 75%);
-        --c-display-dark: hsl(150, 50%, 75%);
-        --c-tool-dark: hsl(35, 60%, 75%);
-        --c-contact-dark: hsl(320, 55%, 75%);
-    }
-
-    body {
-        background: var(--c-dark);
-        color: var(--c-light);
-    }
-
-    header {
-        background: var(--c-dark);
-        color: var(--c-light);
-    }
-    
-    header h1 {
-        border-bottom-color: var(--c-accent);
-    }
-
-    nav a {
-        color: var(--c-light);
-    }
-
-    section h2 {
-        color: var(--c-light);
-    }
-    
-    #about h2 {
-        border-color: var(--c-about-dark);
-    }
-    
-    #contact h2 {
-        border-color: var(--c-contact-dark);
-    }
-
-    .skill-group {
-        background: hsl(220, 10%, 25%);
-        border-top-color: var(--c-about-dark);
-    }
-    
-    .skill-group h3 {
-        color: var(--c-about-dark);
-    }
-    
-    .skill-group li {
-        color: var(--c-light);
-    }
-    
-    .skill-group strong {
-        color: var(--c-about-dark);
-    }
-    
-    .links-section {
-        background: hsl(220, 10%, 25%);
-        border-left-color: var(--c-about-dark);
-    }
-    
-    .links-section a {
-        color: var(--c-about-dark);
-    }
-
-    .work-item {
-        background: hsl(220, 10%, 25%);
-        color: var(--c-light);
-    }
-    
-    .more-works-section {
-        background: hsl(220, 10%, 25%);
-    }
-
-    .more-works-section a {
-        color: var(--c-accent);
-    }
-
-    footer {
-        color: var(--c-secondary);
-    }
-    
-    .work-meta {
-        box-shadow: 0 2px 6px rgba(255,255,255,0.1);
-    }
-    
-    /* ダークモードでは明るい色に統一し、ダークテキストで視認性確保 */
-    .works-category:nth-of-type(1) .work-meta {
-        background: var(--c-featured-dark);
-        color: var(--c-dark);
-    }
-    
-    .works-category:nth-of-type(2) .work-meta {
-        background: var(--c-vr-dark);
-        color: var(--c-dark);
-    }
-    
-    .works-category:nth-of-type(3) .work-meta {
-        background: var(--c-display-dark);
-        color: var(--c-dark);
-    }
-    
-    .works-category:nth-of-type(4) .work-meta {
-        background: var(--c-tool-dark);
-        color: var(--c-dark);
-    }
-
-    .ai-disclaimer {
-        background: hsl(220, 10%, 25%);
-        color: var(--c-light);
-        border-left-color: var(--c-accent);
-    }
-
-    .hero {
-        background: linear-gradient(120deg, var(--c-dark), var(--c-vr-dark));
-        color: var(--c-light);
-    }
-
-    #theme-toggle {
-        border-color: var(--c-light);
-        color: var(--c-light);
-    }
-
-    .ai-disclaimer strong {
-        color: var(--c-accent);
-    }
-}
 
 body.dark {
+    --c-about-dark: hsl(190, 55%, 75%);
+    --c-works-dark: hsl(220, 55%, 75%);
+    --c-featured-dark: hsl(280, 55%, 75%);
+    --c-vr-dark: hsl(210, 55%, 75%);
+    --c-display-dark: hsl(150, 50%, 75%);
+    --c-tool-dark: hsl(35, 60%, 75%);
+    --c-contact-dark: hsl(320, 55%, 75%);
     background: var(--c-dark);
     color: var(--c-light);
 }
@@ -494,6 +371,10 @@ body.dark section h2 {
 
 body.dark #about h2 {
     border-color: var(--c-about-dark);
+}
+
+body.dark #works h2 {
+    border-color: var(--c-works-dark);
 }
 
 body.dark #contact h2 {
