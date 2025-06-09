@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games | Miyamo's Portfolio</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .game-card {
+            background: var(--c-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid var(--c-border);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--c-dark);
+        }
+        
+        .game-description {
+            color: var(--c-text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .play-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--c-primary), var(--c-accent));
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin: 2rem auto;
+            text-align: center;
+            color: var(--c-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <main style="padding: 2rem 0; min-height: 100vh;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="color: var(--c-primary); margin-bottom: 0.5rem;">🎮 Mini Games</h1>
+            <p style="color: var(--c-text-light); font-size: 1.1rem;">技術デモも兼ねたインタラクティブゲーム</p>
+        </div>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="game-icon">🎯</div>
+                <h2 class="game-title">Reflex Tap</h2>
+                <p class="game-description">
+                    反射神経測定ゲーム。3回の平均反応時間を計測し、あなたの反射神経をテストします。
+                </p>
+                <a href="reflex/" class="play-btn">プレイする</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">🔢</div>
+                <h2 class="game-title">Prime Cascade</h2>
+                <p class="game-description">
+                    素数連鎖消去ゲーム。物理演算と数学理論を組み合わせた教育的エンターテインメント。Claude Code協力開発。
+                </p>
+                <a href="prime-cascade/" class="play-btn">プレイする</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="../index.html" class="back-link">← ポートフォリオに戻る</a>
+        </div>
+    </main>
+</body>
+</html>
