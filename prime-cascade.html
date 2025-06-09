@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Cascade | Miyamo's Games</title>
+    <meta property="og:title" content="Prime Cascade - 素数連鎖ゲーム">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="素数をタップして合成数を分解する数学パズルゲーム">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90vw;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .score {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .timer {
+            color: #764ba2;
+            font-size: 1.2rem;
+        }
+
+        canvas {
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            background: #f8f9ff;
+            cursor: pointer;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .instructions {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .stats {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .game-over-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+
+        .game-over-content h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .game-over-content p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .game-over-content button {
+            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+        }
+
+        .game-over-content button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 1rem;
+                width: 95vw;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            canvas {
+                width: 100%;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← ポートフォリオに戻る</a>
+    
+    <div class="game-container">
+        <h1>🔢 Prime Cascade</h1>
+        
+        <div class="game-info">
+            <div class="score">スコア: <span id="score">0</span></div>
+            <div class="timer">時間: <span id="timer">60</span>s</div>
+        </div>
+        
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+        
+        <div class="controls">
+            <button id="startBtn">ゲーム開始</button>
+            <button id="pauseBtn" disabled>一時停止</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-value" id="bestScore">0</span>
+                <div>最高記録</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="chainCount">0</span>
+                <div>最大連鎖</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="primesHit">0</span>
+                <div>素数タップ</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <strong>🎯 遊び方</strong><br>
+            • 青い数字（素数）をタップすると、その素数で割り切れる灰色の数字（合成数）が全て消える<br>
+            • 数字は下に積み重なっていく<br>
+            • 画面上端まで溜まるとゲームオーバー<br>
+            • 30秒でどこまでスコアを伸ばせるかチャレンジ<br><br>
+            <small style="color: #888; font-size: 0.8rem;">
+                🤖 このゲームは <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color: #667eea;">Claude Code</a> との協力により作成されました
+            </small>
+        </div>
+
+        <div id="gameOverOverlay" class="game-over-overlay">
+            <div class="game-over-content">
+                <h2 id="gameOverTitle">ゲーム終了！</h2>
+                <p id="gameOverReason">時間切れです</p>
+                <p>スコア: <span id="finalScore">0</span></p>
+                <p id="newRecord" style="display: none; color: #ffeb3b;">🎉 新記録！</p>
+                <button id="playAgainBtn">もう一度プレイ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PrimeCascadeGame {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.numbers = [];
+                this.particles = [];
+                this.score = 0;
+                this.timeLeft = 30;
+                this.gameRunning = false;
+                this.chainCount = 0;
+                this.maxChain = 0;
+                this.primesHit = 0;
+                this.gameTimer = null;
+                this.spawnTimer = null;
+                this.stackHeight = [];
+                
+                // Initialize stack height array
+                for (let i = 0; i < 10; i++) {
+                    this.stackHeight[i] = this.canvas.height - 30;
+                }
+                
+                this.setupCanvas();
+                this.setupEventListeners();
+                this.loadBestScore();
+                this.gameLoop();
+            }
+
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.style.width = rect.width + 'px';
+                this.canvas.style.height = rect.height + 'px';
+            }
+
+            setupEventListeners() {
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pauseGame());
+                document.getElementById('playAgainBtn').addEventListener('click', () => this.restartGame());
+            }
+
+            isPrime(n) {
+                if (n < 2) return false;
+                if (n === 2) return true;
+                if (n % 2 === 0) return false;
+                for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                    if (n % i === 0) return false;
+                }
+                return true;
+            }
+
+            getFactors(n) {
+                const factors = [];
+                for (let i = 2; i <= n; i++) {
+                    while (n % i === 0) {
+                        factors.push(i);
+                        n /= i;
+                    }
+                }
+                return factors;
+            }
+
+            spawnNumber() {
+                const numbers = [2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21];
+                const num = numbers[Math.floor(Math.random() * numbers.length)];
+                
+                this.numbers.push({
+                    value: num,
+                    x: Math.random() * (this.canvas.width - 50) + 25,
+                    y: -30,
+                    vx: (Math.random() - 0.5) * 1, // 横方向の初速度
+                    vy: 0.5, // 初速度を小さく
+                    isPrime: this.isPrime(num),
+                    radius: 22,
+                    settled: false,
+                    gravity: 0.3, // 重力加速度
+                    bounce: 0.3 // バウンス係数
+                });
+            }
+
+            handleClick(e) {
+                if (!this.gameRunning) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                
+                for (let i = this.numbers.length - 1; i >= 0; i--) {
+                    const num = this.numbers[i];
+                    const dx = x - num.x;
+                    const dy = y - num.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < num.radius && num.isPrime) {
+                        this.hitPrime(i);
+                        break;
+                    }
+                }
+            }
+
+            hitPrime(index) {
+                const prime = this.numbers[index];
+                this.numbers.splice(index, 1);
+                this.score += 10;
+                this.primesHit++;
+                
+                this.createParticles(prime.x, prime.y, '#667eea');
+                
+                // タップした素数で割り切れる合成数を全て削除
+                let removedCount = 0;
+                for (let i = this.numbers.length - 1; i >= 0; i--) {
+                    const num = this.numbers[i];
+                    if (!num.isPrime && num.value % prime.value === 0) {
+                        this.createParticles(num.x, num.y, '#ff6b6b');
+                        this.numbers.splice(i, 1);
+                        removedCount++;
+                    }
+                }
+                
+                // 削除した合成数の数に応じてボーナス
+                if (removedCount > 0) {
+                    this.score += removedCount * 15;
+                    this.maxChain = Math.max(this.maxChain, removedCount);
+                }
+                
+                // スタック高さを再計算
+                this.recalculateStackHeights();
+                
+                this.updateDisplay();
+            }
+
+            recalculateStackHeights() {
+                // この関数は物理演算システムでは不要になりました
+                // 削除後の空洞は自然に詰まります
+            }
+
+            createParticles(x, y, color) {
+                for (let i = 0; i < 8; i++) {
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4,
+                        color: color,
+                        life: 30,
+                        maxLife: 30
+                    });
+                }
+            }
+
+            startGame() {
+                this.gameRunning = true;
+                this.score = 0;
+                this.timeLeft = 30;
+                this.numbers = [];
+                this.particles = [];
+                this.chainCount = 0;
+                this.maxChain = 0;
+                this.primesHit = 0;
+                
+                // Reset stack heights
+                for (let i = 0; i < 10; i++) {
+                    this.stackHeight[i] = this.canvas.height - 30;
+                }
+                
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                
+                this.spawnTimer = setInterval(() => {
+                    if (this.gameRunning) {
+                        // 複数の数字をスポーン
+                        if (Math.random() < 0.9) {
+                            this.spawnNumber();
+                        }
+                        if (Math.random() < 0.4) {
+                            this.spawnNumber();
+                        }
+                    }
+                }, 800);
+                
+                this.gameTimer = setInterval(() => {
+                    if (this.gameRunning) {
+                        this.timeLeft--;
+                        this.updateDisplay();
+                        if (this.timeLeft <= 0) {
+                            this.endGame();
+                        }
+                    }
+                }, 1000);
+                
+                this.updateDisplay();
+            }
+
+            pauseGame() {
+                this.gameRunning = !this.gameRunning;
+                document.getElementById('pauseBtn').textContent = this.gameRunning ? '一時停止' : '再開';
+            }
+
+            endGame(reason = 'time') {
+                this.gameRunning = false;
+                clearInterval(this.spawnTimer);
+                clearInterval(this.gameTimer);
+                
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('pauseBtn').textContent = '一時停止';
+                
+                const bestScore = parseInt(localStorage.getItem('primeCascadeBest') || '0');
+                const isNewRecord = this.score > bestScore;
+                
+                if (isNewRecord) {
+                    localStorage.setItem('primeCascadeBest', this.score.toString());
+                    this.loadBestScore();
+                }
+                
+                // Show game over overlay
+                this.showGameOverOverlay(reason, isNewRecord);
+            }
+
+            showGameOverOverlay(reason, isNewRecord) {
+                const overlay = document.getElementById('gameOverOverlay');
+                const title = document.getElementById('gameOverTitle');
+                const reasonText = document.getElementById('gameOverReason');
+                const finalScore = document.getElementById('finalScore');
+                const newRecord = document.getElementById('newRecord');
+                
+                title.textContent = reason === 'overflow' ? 'ゲームオーバー！' : '時間切れ！';
+                reasonText.textContent = reason === 'overflow' ? '数字が溢れました' : '30秒経過しました';
+                finalScore.textContent = this.score;
+                newRecord.style.display = isNewRecord ? 'block' : 'none';
+                
+                overlay.style.display = 'flex';
+            }
+
+            restartGame() {
+                document.getElementById('gameOverOverlay').style.display = 'none';
+                this.startGame();
+            }
+
+            loadBestScore() {
+                const bestScore = localStorage.getItem('primeCascadeBest') || '0';
+                document.getElementById('bestScore').textContent = bestScore;
+            }
+
+            updateDisplay() {
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('timer').textContent = this.timeLeft;
+                document.getElementById('chainCount').textContent = this.maxChain;
+                document.getElementById('primesHit').textContent = this.primesHit;
+            }
+
+            update() {
+                if (!this.gameRunning) return;
+                
+                // Update numbers with improved physics
+                for (let i = this.numbers.length - 1; i >= 0; i--) {
+                    const num = this.numbers[i];
+                    
+                    if (!num.settled) {
+                        // Apply gravity
+                        num.vy += num.gravity;
+                        
+                        // Update position
+                        num.x += num.vx;
+                        num.y += num.vy;
+                        
+                        // Wall collision (bounce off sides)
+                        if (num.x - num.radius < 0) {
+                            num.x = num.radius;
+                            num.vx = -num.vx * num.bounce;
+                        } else if (num.x + num.radius > this.canvas.width) {
+                            num.x = this.canvas.width - num.radius;
+                            num.vx = -num.vx * num.bounce;
+                        }
+                        
+                        // Check collision with bottom
+                        if (num.y + num.radius >= this.canvas.height - 10) {
+                            num.y = this.canvas.height - 10 - num.radius;
+                            num.vy = -num.vy * num.bounce;
+                            
+                            // If bouncing is minimal, settle
+                            if (Math.abs(num.vy) < 1 && Math.abs(num.vx) < 0.5) {
+                                num.settled = true;
+                                num.vx = 0;
+                                num.vy = 0;
+                            }
+                        }
+                        
+                        // Check collision with other numbers
+                        for (let j = 0; j < this.numbers.length; j++) {
+                            if (i !== j) {
+                                const other = this.numbers[j];
+                                const dx = num.x - other.x;
+                                const dy = num.y - other.y;
+                                const distance = Math.sqrt(dx * dx + dy * dy);
+                                const minDistance = num.radius + other.radius;
+                                
+                                if (distance < minDistance) {
+                                    // Calculate collision response
+                                    const angle = Math.atan2(dy, dx);
+                                    const targetX = other.x + Math.cos(angle) * minDistance;
+                                    const targetY = other.y + Math.sin(angle) * minDistance;
+                                    
+                                    num.x = targetX;
+                                    num.y = targetY;
+                                    
+                                    // Apply bounce
+                                    if (!other.settled) {
+                                        const vx1 = num.vx;
+                                        const vy1 = num.vy;
+                                        num.vx = other.vx * num.bounce;
+                                        num.vy = other.vy * num.bounce;
+                                        other.vx = vx1 * other.bounce;
+                                        other.vy = vy1 * other.bounce;
+                                    } else {
+                                        num.vx *= -num.bounce;
+                                        num.vy *= -num.bounce;
+                                        
+                                        // Settle if collision is minimal
+                                        if (Math.abs(num.vy) < 1 && Math.abs(num.vx) < 0.5) {
+                                            num.settled = true;
+                                            num.vx = 0;
+                                            num.vy = 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Check for overflow
+                        if (num.y < 50 && num.settled) {
+                            this.endGame('overflow');
+                            return;
+                        }
+                    }
+                }
+
+                // Update particles
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life--;
+                    
+                    if (p.life <= 0) {
+                        this.particles.splice(i, 1);
+                    }
+                }
+            }
+
+            draw() {
+                this.ctx.fillStyle = '#f8f9ff';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw column guides (subtle)
+                this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.1)';
+                this.ctx.lineWidth = 1;
+                for (let i = 1; i < 10; i++) {
+                    const x = i * (this.canvas.width / 10);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, this.canvas.height);
+                    this.ctx.stroke();
+                }
+
+                // Draw danger line (top area)
+                this.ctx.strokeStyle = 'rgba(255, 107, 107, 0.3)';
+                this.ctx.lineWidth = 2;
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, 50);
+                this.ctx.lineTo(this.canvas.width, 50);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+
+                // Draw numbers
+                this.numbers.forEach(num => {
+                    this.ctx.save();
+                    
+                    // Shadow for depth
+                    if (num.settled) {
+                        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                        this.ctx.shadowBlur = 4;
+                        this.ctx.shadowOffsetY = 2;
+                    }
+                    
+                    // Number circle
+                    this.ctx.fillStyle = num.isPrime ? '#667eea' : '#95a5a6';
+                    this.ctx.beginPath();
+                    this.ctx.arc(num.x, num.y, num.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Glow effect for primes
+                    if (num.isPrime && !num.settled) {
+                        this.ctx.shadowColor = '#667eea';
+                        this.ctx.shadowBlur = 15;
+                        this.ctx.beginPath();
+                        this.ctx.arc(num.x, num.y, num.radius + 2, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                    }
+                    
+                    // Number text
+                    this.ctx.shadowColor = 'transparent';
+                    this.ctx.fillStyle = 'white';
+                    this.ctx.font = 'bold 14px sans-serif';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(num.value.toString(), num.x, num.y);
+                    
+                    this.ctx.restore();
+                });
+
+                // Draw particles
+                this.particles.forEach(p => {
+                    const alpha = p.life / p.maxLife;
+                    this.ctx.save();
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.restore();
+                });
+            }
+
+            gameLoop() {
+                this.update();
+                this.draw();
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+
+        // Initialize game when page loads
+        window.addEventListener('load', () => {
+            new PrimeCascadeGame();
+        });
+    </script>
+</body>
+</html>
